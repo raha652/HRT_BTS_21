@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>گزارش کاری ترانزمیشن هرات</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <canvas id="animated-bg"></canvas>
+
+  <!-- بخش ورود -->
+  <div id="loginContainer" class="container">
+    <h1>لطفا نام کاربری و رمز خود را وارد نمایید</h1>
+    <form id="loginForm">
+      <input type="text" id="loginUsername" placeholder="نام کاربری" required />
+      <input type="password" id="loginPassword" placeholder="رمز عبور" required />
+      <button type="submit">ورود</button>
+    </form>
+    <div id="loginStatus"></div>
+  </div>
+
+  <!-- محتوای اصلی فرم (مخفی در ابتدا) -->
+  <div id="mainContent" class="container hidden">
+    <h1>ثبت گزارش ترانزمیشن هرات</h1>
+    <button id="formBtn">ثبت فورم</button>
+    <button id="uploadBtn">ثبت گزارش</button>
+
+    <!-- فرم گزارش متنی -->
+    <form id="reportForm" class="hidden">
+      <!-- فیلد تکنسین به‌صورت خودکار از لاگین وارد می‌شود -->
+      <input type="text" id="technician" placeholder="تکنسین" required />
+      <input type="text" id="technician_assistant" placeholder="تکنسین همراه" />
+      <input type="text" id="task" placeholder="تسک" required />
+      <input type="text" id="activity" placeholder="فعالیت انجام داده شده" required />
+      <input type="text" id="device_details" placeholder="مشخصات دستگاه در صورت نصب" />
+      <input type="date" id="date" required />
+      <input type="text" id="employee_id" placeholder="آیدی" required />
+      <!-- انتخاب بیس از این بخش حذف شده و به صورت هوشمند از URL گرفته می‌شود -->
+      <button type="submit">ارسال فورم</button>
+      <div id="formStatus"></div>
+    </form>
+
+    <!-- فرم آپلود فایل -->
+    <form id="uploadForm" method="POST" class="hidden">
+      <input type="file" name="media" id="media" accept="image/*,video/*" multiple required />
+      <textarea id="caption" placeholder="توضیح برای فایل‌ها..." rows="4" style="width: 90%; margin-top: 10px;"></textarea>
+      <button type="submit">📤 ارسال فایل</button>
+      <p id="uploadStatus"></p>
+    </form>
+  </div>
+
+  <div id="progressContainer" class="hidden">
+    <progress id="uploadProgress" value="0" max="100" style="width: 100%; height: 20px;"></progress>
+    <div id="progressText" style="margin-top: 5px; font-size: 14px;"></div>
+    <button id="cancelUploadBtn" class="hidden" style="background-color: #e74c3c;">🛑 لغو ارسال</button>
+  </div>
+
+  <script src="script.js"></script>
+  
+  <!-- انیمیشن canvas -->
+  <script>
+    const canvas = document.getElementById('animated-bg');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let points = [];
+
+    for (let x = 0; x < canvas.width; x += 50) {
+      for (let y = 0; y < canvas.height; y += 50) {
+        points.push({ x, y, dx: (Math.random() - 0.5) * 0.5, dy: (Math.random() - 0.5) * 0.5 });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i < points.length; i++) {
+        let p = points[i];
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+
+        for (let j = i + 1; j < points.length; j++) {
+          let p2 = points[j];
+          let dx = p.x - p2.x;
+          let dy = p.y - p2.y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 100) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  </script>
+</body>
+</html>
