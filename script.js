@@ -23,6 +23,8 @@ const USERS = {
   "1850": "nh",
   "1781": "zs",
   "1826": "rabbani",
+  "1875": "qu",
+  "1715": "ma",
   "user450": "us"
 };
 
@@ -176,6 +178,7 @@ function resetProgressUI() {
   document.getElementById("uploadProgress").value = 0;
   document.getElementById("progressText").textContent = "";
 }
+
 
 
 
