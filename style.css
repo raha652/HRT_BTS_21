@@ -135,6 +135,13 @@ h2 {
   margin-top: 6px;
 }
 
+.field-label {
+  margin: 2px 4px -4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .toggle-row {
   display: grid;
   grid-template-columns: 1fr 1fr;

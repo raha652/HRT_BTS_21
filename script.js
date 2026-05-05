@@ -69,6 +69,7 @@ function loginSuccess(member) {
   technicianField.value = displayName;
   idField.value = member.memberId || member.username;
   idField.readOnly = true;
+  setUploadFormDefaults(displayName);
 }
 
 function isAdminMember(member) {
@@ -164,25 +165,48 @@ let xhr;
 uploadForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const files = this.media.files;
-  const caption = document.getElementById("caption").value;
+  const files = Array.from(this.media.files);
+  const caption = document.getElementById("caption").value.trim();
+  const uploadTechnician = document.getElementById("uploadTechnician").value.trim();
+  const uploadTechnicianAssistant = document.getElementById("uploadTechnicianAssistant").value.trim();
+  const uploadDate = document.getElementById("uploadDate").value;
   if (!files.length) return;
 
-  const mediaGroup = [];
   const formData = new FormData();
-
-  [...files].forEach((file, index) => {
-    mediaGroup.push({
-      type: file.type.startsWith("video/") ? "video" : "photo",
-      media: `attach://${file.name}`,
-      caption: index === 0 ? caption : undefined
-    });
-    formData.append(file.name, file);
+  const formattedCaption = buildUploadCaption({
+    technician: uploadTechnician,
+    technicianAssistant: uploadTechnicianAssistant,
+    date: uploadDate,
+    text: caption
   });
+  const isSingleFile = files.length === 1;
 
   formData.append("chat_id", CHAT_ID);
   formData.append("message_thread_id", THREAD_ID);
-  formData.append("media", JSON.stringify(mediaGroup));
+
+  let endpoint = "";
+
+  if (isSingleFile) {
+    const file = files[0];
+    const mediaField = file.type.startsWith("video/") ? "video" : "photo";
+    endpoint = mediaField === "video" ? "sendVideo" : "sendPhoto";
+    formData.append(mediaField, file);
+    formData.append("caption", formattedCaption);
+  } else {
+    const mediaGroup = [];
+
+    files.forEach((file, index) => {
+      mediaGroup.push({
+        type: file.type.startsWith("video/") ? "video" : "photo",
+        media: `attach://${file.name}`,
+        caption: index === 0 ? formattedCaption : undefined
+      });
+      formData.append(file.name, file);
+    });
+
+    endpoint = "sendMediaGroup";
+    formData.append("media", JSON.stringify(mediaGroup));
+  }
 
   document.getElementById("progressContainer").classList.remove("hidden");
   document.getElementById("cancelUploadBtn").classList.remove("hidden");
@@ -190,7 +214,7 @@ uploadForm.addEventListener("submit", function (e) {
   const progressText = document.getElementById("progressText");
 
   xhr = new XMLHttpRequest();
-  xhr.open("POST", `https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, true);
+  xhr.open("POST", `https://api.telegram.org/bot${BOT_TOKEN}/${endpoint}`, true);
 
   xhr.upload.onprogress = function (event) {
     if (event.lengthComputable) {
@@ -206,7 +230,16 @@ uploadForm.addEventListener("submit", function (e) {
     if (xhr.status === 200) {
       document.getElementById("uploadStatus").textContent = "✅ فایل‌ها موفقانه ارسال شدند.";
     } else {
-      document.getElementById("uploadStatus").textContent = "❌ خطا در ارسال فایل‌ها.";
+      let errorMessage = "❌ خطا در ارسال فایل‌ها.";
+      try {
+        const response = JSON.parse(xhr.responseText);
+        if (response.description) {
+          errorMessage = `❌ ${response.description}`;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+      document.getElementById("uploadStatus").textContent = errorMessage;
     }
     resetProgressUI();
   };
@@ -278,6 +311,26 @@ function resetProgressUI() {
   document.getElementById("cancelUploadBtn").classList.add("hidden");
   document.getElementById("uploadProgress").value = 0;
   document.getElementById("progressText").textContent = "";
+  setUploadFormDefaults(localStorage.getItem("technician_name") || localStorage.getItem("technician_username") || "");
 }
 
-document.getElementById("date").value = new Date().toISOString().split("T")[0];
+function setUploadFormDefaults(displayName) {
+  document.getElementById("uploadTechnician").value = displayName;
+  document.getElementById("uploadDate").value = getTodayValue();
+}
+
+function buildUploadCaption({ technician, technicianAssistant, date, text }) {
+  return [
+    `تکنسین: ${technician || "-"}`,
+    `تکنسین همراه: ${technicianAssistant || "-"}`,
+    `تاریخ: ${date || "-"}`,
+    `فعالیت انجام شده: ${text || "-"}`
+  ].join("\n");
+}
+
+function getTodayValue() {
+  return new Date().toISOString().split("T")[0];
+}
+
+document.getElementById("date").value = getTodayValue();
+document.getElementById("uploadDate").value = getTodayValue();

@@ -51,8 +51,12 @@
       <div class="form-intro">
         <h2>ارسال فایل</h2>
       </div>
+      <label class="field-label" for="uploadTechnicianAssistant">تکنسین همراه</label>
+      <input type="text" id="uploadTechnicianAssistant" placeholder="نام تکنسین همراه را وارد کنید" required />
+      <input type="hidden" id="uploadTechnician" />
+      <input type="hidden" id="uploadDate" />
       <input type="file" name="media" id="media" accept="image/*,video/*" multiple required />
-      <textarea id="caption" placeholder="توضیح برای فایل‌ها..." rows="4"></textarea>
+      <textarea id="caption" placeholder="متن گزارش..." rows="4"></textarea>
       <button type="submit">ارسال فایل</button>
       <p id="uploadStatus" aria-live="polite"></p>
     </form>
