@@ -1,25 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
 
-body {
-  font-family: 'Orbitron', sans-serif;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  color: #222;
-  overflow-x: hidden;
-  background: linear-gradient(135deg, #b2d8b2 0%, #d2f0d2 100%);
-  background-attachment: fixed;
-  position: relative;
+:root {
+  --bg-top: #189664;
+  --bg-bottom: #23e3a3;
+  --panel: rgba(255, 255, 255, 0.9);
+  --panel-border: rgba(214, 241, 220, 0.18);
+  --text: #163020;
+  --muted: #46624d;
+  --primary: #2f9e44;
+  --primary-dark: #237a34;
+  --secondary: #edf7ef;
+  --danger: #d94841;
+  --shadow: 0 16px 40px rgba(16, 52, 27, 0.12);
+  --radius: 22px;
 }
 
-/* شبکه نورانی */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Vazirmatn', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  padding: 24px 14px 120px;
+  color: var(--text);
+  overflow-x: hidden;
+  background: linear-gradient(135deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  background-attachment: fixed;
+  position: relative;
+  text-align: right;
+}
+
 body::before {
   content: "";
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background-image: 
-    linear-gradient(0deg, rgba(255,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  inset: 0;
+  background-image:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
   z-index: -1;
   animation: moveGrid 2s linear infinite;
@@ -29,97 +52,277 @@ body::before {
   from {
     background-position: 0 0;
   }
+
   to {
     background-position: 40px 40px;
   }
 }
 
 .container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 30px;
-  background-color: #ffffffcc;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
+  width: min(100%, 640px);
+  margin: 0 auto 18px;
+  padding: 22px 18px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.panel-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 6px 12px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: #e2f2e5;
+  color: var(--primary-dark);
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 h1 {
-  font-size: 2.5rem;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: #333;
+  margin: 0 0 10px;
+  font-size: clamp(1.5rem, 5vw, 2.35rem);
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--text);
 }
 
-input, textarea, button {
-  font-size: 16px;
-  padding: 10px;
-  margin: 5px 0;
-  width: 90%;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.panel-description {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.developer-credit {
+  margin: 10px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+}
+
+.inline-code {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(47, 158, 68, 0.12);
+  color: var(--primary-dark);
+  font-size: 0.88em;
+  font-weight: 700;
+}
+
+.stack-form {
+  display: grid;
+  gap: 12px;
+}
+
+.form-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.toggle-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 8px 0 18px;
+}
+
+input,
+textarea,
+button,
+progress {
+  width: 100%;
+}
+
+input,
+textarea {
+  font: inherit;
+  color: var(--text);
+  padding: 14px 15px;
+  border-radius: 14px;
+  border: 1px solid #cfe1d2;
+  background: rgba(255, 255, 255, 0.92);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #75907c;
+}
+
+input:focus,
+textarea:focus {
+  border-color: rgba(47, 158, 68, 0.7);
+  box-shadow: 0 0 0 4px rgba(47, 158, 68, 0.12);
+  background: #fff;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 110px;
 }
 
 button {
-  background-color: #4CAF50;
-  color: white;
+  font: inherit;
+  min-height: 50px;
+  padding: 13px 16px;
+  border-radius: 14px;
   border: none;
+  background: var(--primary);
+  color: #fff;
   cursor: pointer;
-  transition: 0.3s ease;
+  font-weight: 700;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 20px rgba(47, 158, 68, 0.22);
 }
 
-button:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
+button:hover,
+button:focus-visible {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
+.secondary-btn {
+  background: var(--secondary);
+  color: var(--primary-dark);
+  box-shadow: none;
+  border: 1px solid rgba(47, 158, 68, 0.2);
+}
+
+.secondary-btn:hover,
+.secondary-btn:focus-visible {
+  background: #def1e3;
+}
+
+.danger-btn,
+#cancelUploadBtn {
+  background: var(--danger);
+  box-shadow: 0 10px 20px rgba(217, 72, 65, 0.2);
+}
+
+.danger-btn:hover,
+.danger-btn:focus-visible,
+#cancelUploadBtn:hover,
+#cancelUploadBtn:focus-visible {
+  background: #bc3e37;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-#formStatus, #uploadStatus, #loginStatus {
-  font-size: 14px;
-  margin-top: 10px;
-  color: #333;
+#formStatus,
+#uploadStatus,
+#loginStatus,
+#progressText,
+#memberStatus {
+  font-size: 0.92rem;
+  margin-top: 4px;
+  line-height: 1.7;
+  color: var(--text);
+  min-height: 1.6em;
 }
 
-#progressContainer {
-  margin-top: 20px;
+.progress-shell {
+  width: min(100%, 640px);
+  margin: 0 auto;
+  padding: 16px 18px max(18px, env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.97);
+  border-top: 1px solid rgba(47, 158, 68, 0.16);
+  box-shadow: 0 -12px 30px rgba(16, 52, 27, 0.08);
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 30;
 }
 
-#cancelUploadBtn {
-  margin-top: 10px;
-  background-color: #e74c3c;
+#uploadProgress {
+  display: block;
+  height: 12px;
+  appearance: none;
+  overflow: hidden;
   border: none;
-  border-radius: 6px;
-  color: white;
-  padding: 10px 20px;
-  cursor: pointer;
+  border-radius: 999px;
+  background: #dceadd;
 }
 
-.scroll-down {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: bounce 2s infinite;
-  font-size: 26px;
-  color: #333;
-  cursor: pointer;
-  z-index: 999;
+#uploadProgress::-webkit-progress-bar {
+  background: #dceadd;
+  border-radius: 999px;
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translate(-50%, 0); }
-  50% { transform: translate(-50%, -10px); }
+#uploadProgress::-webkit-progress-value {
+  background: linear-gradient(90deg, var(--primary), #57c26e);
+  border-radius: 999px;
+}
+
+#uploadProgress::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--primary), #57c26e);
+  border-radius: 999px;
 }
 
 #animated-bg {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   height: 100vh;
   z-index: -1;
-  background-color: #b2d8b2;
+  background-color: var(--bg-top);
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 12px 10px 120px;
+  }
+
+  .container {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+
+  .toggle-row {
+    position: sticky;
+    top: 10px;
+    z-index: 10;
+    padding: 10px;
+    margin-inline: -4px;
+    background: rgba(223, 238, 227, 0.88);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+  }
+
+  input,
+  textarea,
+  button {
+    font-size: 16px;
+  }
 }
